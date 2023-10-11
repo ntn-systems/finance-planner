@@ -23,6 +23,8 @@
 		if (!initialValue) throw new Error('No initial value');
 		const { subscribe, update, set } = writable<FinancesEntry[]>(initialValue);
 
+		const isValidDayOfWeek = (day: string) => validDays.includes(day.toLowerCase());
+
 		return {
 			subscribe,
 			update,
@@ -35,6 +37,10 @@
 				month?: string,
 				year?: string
 			) => {
+				if (fixedInterval === 'weekly' && dayOfWeek && !isValidDayOfWeek(dayOfWeek)) {
+					alert('Invalid  day of week.(Please use a valid day (e.g, Sunday, Monday etc.)');
+					return;
+				}
 				const id = Math.floor(Math.random() * 1000);
 				const newEntry: FinancesEntry = {
 					id,
