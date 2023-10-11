@@ -30,7 +30,10 @@
 			add: (
 				value: number,
 				category: string,
-				fixedInterval: 'not fixed' | 'daily' | 'weekly' | 'monthly' | 'annual'
+				fixedInterval: 'not fixed' | 'daily' | 'weekly' | 'monthly' | 'annual',
+				dayOfWeek?: string,
+				month?: string,
+				year?: string
 			) => {
 				const id = Math.floor(Math.random() * 1000);
 				const newEntry: FinancesEntry = {
