@@ -46,7 +46,10 @@
 					id,
 					value,
 					category,
-					fixedInterval
+					fixedInterval,
+					dayOfWeek: fixedInterval === 'weekly' ? dayOfWeek : undefined,
+					month: fixedInterval === 'monthly' ? month : undefined,
+					year: fixedInterval === 'annual' ? year : undefined
 				};
 				update((entries) => [...entries, newEntry]);
 			}
