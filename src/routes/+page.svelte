@@ -83,7 +83,7 @@
 			value: 200,
 			category: '',
 			fixedInterval: 'not fixed',
-			dayOfWeek: 'sunday'
+			dayOfWeek: 'Sunday'
 		}
 	]);
 </script>
@@ -94,17 +94,17 @@
 		<input type="number" bind:value placeholder="Valor" />
 		<input type="text" bind:value={category} placeholder="Category" />
 		<select bind:value={fixedInterval}>
-			<option value="not fixed">Not Fixed</option>
-			<option value="daily">Daily</option>
-			<option value="weekly">Weekly</option>
-			<option value="monthly">Monthly</option>
-			<option value="annual">Annual</option>
+			<option value="Not fixed">Not Fixed</option>
+			<option value="Daily">Daily</option>
+			<option value="Weekly">Weekly</option>
+			<option value="Monthly">Monthly</option>
+			<option value="Annual">Annual</option>
 		</select>
 		<button
 			tabindex="0"
 			on:click={() => {
 				if (value && category && fixedInterval) {
-					finances.add(value, category, fixedInterval);
+					finances.add(value, category, fixedInterval, dayOfWeek, month, year);
 				} else {
 					alert('Please fill in all fields');
 				}
@@ -112,7 +112,7 @@
 			on:keydown={(event) => {
 				if (event.key === 'Enter') {
 					if (value && category && fixedInterval) {
-						finances.add(value, category, fixedInterval);
+						finances.add(value, category, fixedInterval, dayOfWeek, month, year);
 					} else {
 						alert('Please fill in all fields');
 					}
@@ -125,7 +125,9 @@
 	<ul>
 		{#each $finances as entry (entry.id)}
 			<li>
-				Value: {entry.value}, Category: {entry.category}, Interval: {entry.fixedInterval}
+				Value: {entry.value}, Category: {entry.category}, Interval: {entry.fixedInterval} Date: {entry.dayOfWeek ||
+					entry.month ||
+					entry.year}
 			</li>
 		{/each}
 	</ul>
