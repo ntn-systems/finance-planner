@@ -22,6 +22,13 @@
 	const validDays = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
 	$: {
 		if (fixedInterval === 'weekly') {
+			dateInputPlaceholder = 'Day of the Week (e.g, Sunday)';
+		} else if (fixedInterval === 'monthly') {
+			dateInputPlaceholder = 'DD/MM';
+		} else if (fixedInterval === 'annual') {
+			dateInputPlaceholder = 'MM/YYYY';
+		} else {
+			dateInputPlaceholder = '';
 		}
 	}
 
