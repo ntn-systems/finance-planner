@@ -20,6 +20,7 @@
 	let dateInputPlaceholder = '';
 
 	const validDays = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+
 	$: {
 		if (fixedInterval === 'weekly') {
 			dateInputPlaceholder = 'Day of the Week (e.g, Sunday)';
@@ -124,7 +125,7 @@
 	<ul>
 		{#each $finances as entry (entry.id)}
 			<li>
-				Valor: {entry.value}, Categoria: {entry.category}, Periodo: {entry.fixedInterval}
+				Value: {entry.value}, Category: {entry.category}, Interval: {entry.fixedInterval}
 			</li>
 		{/each}
 	</ul>
