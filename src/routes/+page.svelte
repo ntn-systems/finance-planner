@@ -1,4 +1,5 @@
 <script lang="ts">
+	import type { stringify } from 'postcss';
 	import { writable } from 'svelte/store';
 
 	type FinancesEntry = {
@@ -94,6 +95,7 @@
 		<input type="number" bind:value placeholder="Valor" />
 		<input type="text" bind:value={category} placeholder="Category" />
 		<select bind:value={fixedInterval}>
+			<option value="" disabled selected>Select time interval</option>
 			<option value="Not fixed">Not Fixed</option>
 			<option value="Daily">Daily</option>
 			<option value="Weekly">Weekly</option>
@@ -125,7 +127,7 @@
 	<ul>
 		{#each $finances as entry (entry.id)}
 			<li>
-				Value: {entry.value}, Category: {entry.category}, Interval: {entry.fixedInterval} Date: {entry.dayOfWeek ||
+				Value: {entry.value} | Category: {entry.category} | Interval: {entry.fixedInterval} | Date: {entry.dayOfWeek ||
 					entry.month ||
 					entry.year}
 			</li>
