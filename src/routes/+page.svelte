@@ -13,7 +13,7 @@
 
 	let value = 0;
 	let category = '';
-	let fixedInterval = 'not fixed';
+	let fixedInterval: 'not fixed' | 'daily' | 'weekly' | 'monthly' | 'annual' = 'not fixed';
 	let dayOfWeek = '';
 	let month = '';
 	let year = '';
