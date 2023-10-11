@@ -17,7 +17,13 @@
 	let dayOfWeek = '';
 	let month = '';
 	let year = '';
+	let dateInputPlaceholder = '';
+
 	const validDays = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+	$: {
+		if (fixedInterval === 'weekly') {
+		}
+	}
 
 	function createNewEntrys(initialValue?: FinancesEntry[]) {
 		if (!initialValue) throw new Error('No initial value');
