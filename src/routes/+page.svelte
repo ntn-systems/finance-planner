@@ -106,7 +106,7 @@
 				if (value && category && fixedInterval) {
 					finances.add(value, category, fixedInterval);
 				} else {
-					console.error('Please fill in all fields');
+					alert('Please fill in all fields');
 				}
 			}}
 			on:keydown={(event) => {
@@ -114,7 +114,7 @@
 					if (value && category && fixedInterval) {
 						finances.add(value, category, fixedInterval);
 					} else {
-						console.error('Please fill in all fields');
+						alert('Please fill in all fields');
 					}
 				}
 			}}
