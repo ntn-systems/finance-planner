@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { stringify } from 'postcss';
 	import { writable } from 'svelte/store';
 
 	type FinancesEntry = {
