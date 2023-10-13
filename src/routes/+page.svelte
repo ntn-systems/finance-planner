@@ -99,7 +99,9 @@
 				if (value && fixedInterval) {
 					finances.add(value, category, fixedInterval, dayOfWeek, month, year);
 				} else {
-					alert('Please fill in the value field');
+					alert(
+						'Please fill in the value field with a positive or negative number to gerate a new credit or debit.'
+					);
 				}
 			}}
 			on:keydown={(event) => {
@@ -107,7 +109,9 @@
 					if (value && fixedInterval) {
 						finances.add(value, category, fixedInterval, dayOfWeek, month, year);
 					} else {
-						alert('Please fill in the value field');
+						alert(
+							'Please fill in the value field with a positive or negative number to gerate a new credit or debit.'
+						);
 					}
 				}
 			}}
