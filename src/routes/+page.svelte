@@ -118,9 +118,10 @@
 	<ul>
 		{#each $finances as entry (entry.id)}
 			<li>
-				Value: {entry.value} | Category: {entry.category} | Interval: {entry.fixedInterval} | Date: {entry.dayOfWeek ||
-					entry.month ||
-					entry.year}
+				Value: {entry.value} | Category: {entry.category} | Interval: {entry.fixedInterval}
+				{#if entry.fixedInterval === 'weekly' || entry.fixedInterval === 'monthly' || entry.fixedInterval === 'annual'}
+					| Date: {entry.dayOfWeek || entry.month || entry.year}
+				{/if}
 			</li>
 		{/each}
 	</ul>
