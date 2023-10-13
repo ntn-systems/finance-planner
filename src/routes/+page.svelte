@@ -107,7 +107,7 @@
 					if (value && fixedInterval) {
 						finances.add(value, category, fixedInterval, dayOfWeek, month, year);
 					} else {
-						alert('Please fill in all fields');
+						alert('Please fill in the value field');
 					}
 				}
 			}}
