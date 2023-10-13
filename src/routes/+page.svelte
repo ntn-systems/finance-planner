@@ -124,7 +124,7 @@
 			<li>
 				Value: {entry.value} | Category: {entry.category} | Interval: {entry.fixedInterval}
 				{#if entry.fixedInterval === 'weekly' || entry.fixedInterval === 'monthly' || entry.fixedInterval === 'annual'}
-					| Date: {entry.dayOfWeek || entry.month || entry.year}
+					| Date: {entry.dayOfWeek || entry.month || entry.year || undefined}
 				{/if}
 			</li>
 		{/each}
