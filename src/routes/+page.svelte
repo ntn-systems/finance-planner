@@ -55,6 +55,7 @@
 					alert('Invalid  day of week.(Please use a valid day (e.g, Sunday, Monday etc.)');
 					return;
 				}
+
 				const id = Math.floor(Math.random() * 1000);
 				const newEntry: FinancesEntry = {
 					id,
@@ -70,22 +71,7 @@
 		};
 	}
 
-	const finances = createNewEntrys([
-		{
-			id: 1,
-			value: 100,
-			category: 'School',
-			fixedInterval: 'monthly',
-			month: '06/09'
-		},
-		{
-			id: 2,
-			value: 200,
-			category: '',
-			fixedInterval: 'not fixed',
-			dayOfWeek: 'Sunday'
-		}
-	]);
+	const finances = createNewEntrys([]);
 </script>
 
 <main>
@@ -94,25 +80,31 @@
 		<input type="number" bind:value placeholder="Valor" />
 		<input type="text" bind:value={category} placeholder="Category" />
 		<select bind:value={fixedInterval}>
-			<option value="" disabled selected>Select time interval</option>
-			<option value="Not fixed">Not Fixed</option>
-			<option value="Daily">Daily</option>
-			<option value="Weekly">Weekly</option>
-			<option value="Monthly">Monthly</option>
-			<option value="Annual">Annual</option>
+			<option value="not fixed">Not Fixed</option>
+			<option value="daily">Daily</option>
+			<option value="weekly">Weekly</option>
+			<option value="monthly">Monthly</option>
+			<option value="annual">Annual</option>
 		</select>
+		{#if fixedInterval === 'weekly'}
+			<input type="text" bind:value={dayOfWeek} placeholder={dateInputPlaceholder} />
+		{:else if fixedInterval === 'monthly'}
+			<input type="text" bind:value={month} placeholder={dateInputPlaceholder} />
+		{:else if fixedInterval === 'annual'}
+			<input type="text" bind:value={year} placeholder={dateInputPlaceholder} />
+		{/if}
 		<button
 			tabindex="0"
 			on:click={() => {
-				if (value && category && fixedInterval) {
+				if (value && fixedInterval) {
 					finances.add(value, category, fixedInterval, dayOfWeek, month, year);
 				} else {
-					alert('Please fill in all fields');
+					alert('Please fill in the value field');
 				}
 			}}
 			on:keydown={(event) => {
 				if (event.key === 'Enter') {
-					if (value && category && fixedInterval) {
+					if (value && fixedInterval) {
 						finances.add(value, category, fixedInterval, dayOfWeek, month, year);
 					} else {
 						alert('Please fill in all fields');
