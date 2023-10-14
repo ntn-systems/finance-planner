@@ -77,7 +77,7 @@
 <main>
 	<h1 class="flex justify-center">My Finances</h1>
 	<div>
-		<input type="number" bind:value placeholder="Valor" />
+		<input type="number" bind:value placeholder="Value" />
 		<input type="text" bind:value={category} placeholder="Category" />
 		<select bind:value={fixedInterval}>
 			<option value="not fixed">Not Fixed</option>
