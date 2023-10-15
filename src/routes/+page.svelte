@@ -1,46 +1,26 @@
 <script lang="ts">
+    import Button from '$lib/components/Button.svelte'
+    import Input from '$lib/components/input.svelte'
+    import Select from '$lib/components/select.svelte'
     import Dialog from '$lib/components/Dialog.svelte'
     import { writable } from 'svelte/store'
 
+    let open = false
+
     type FinancesEntry = {
-        id: number
-        value: number
+        amount: string
         category?: string
         fixedInterval: 'not fixed' | 'daily' | 'weekly' | 'monthly' | 'annual'
-        dayOfWeek?: string
-        month?: string
-        year?: string
+        reocurrency?: string
     }
 
-    let value = 0
-    let category = ''
     let fixedInterval: 'not fixed' | 'daily' | 'weekly' | 'monthly' | 'annual' =
         'not fixed'
-    let dayOfWeek = ''
-    let month = ''
-    let year = ''
-    let dateInputPlaceholder = ''
 
-    const validDays = [
-        'sunday',
-        'monday',
-        'tuesday',
-        'wednesday',
-        'thursday',
-        'friday',
-        'saturday',
-    ]
-
-    $: {
-        if (fixedInterval === 'weekly') {
-            dateInputPlaceholder = 'Day of the Week (e.g, Sunday)'
-        } else if (fixedInterval === 'monthly') {
-            dateInputPlaceholder = 'DD/MM'
-        } else if (fixedInterval === 'annual') {
-            dateInputPlaceholder = 'MM/YYYY'
-        } else {
-            dateInputPlaceholder = ''
-        }
+    const reocurrency_labels: Record<string, string> = {
+        weekly: 'Day of the Week',
+        monthly: 'Ocurring day',
+        annual: 'Day of the year',
     }
 
     function createNewEntrys(initialValue?: FinancesEntry[]) {
@@ -48,49 +28,13 @@
         const { subscribe, update, set } =
             writable<FinancesEntry[]>(initialValue)
 
-        const isValidDayOfWeek = (day: string) =>
-            validDays.includes(day.toLowerCase())
-
         return {
             subscribe,
             update,
             set,
-            add: (
-                value: number,
-                category: string,
-                fixedInterval:
-                    | 'not fixed'
-                    | 'daily'
-                    | 'weekly'
-                    | 'monthly'
-                    | 'annual',
-                dayOfWeek?: string,
-                month?: string,
-                year?: string,
-            ) => {
-                if (
-                    fixedInterval === 'weekly' &&
-                    dayOfWeek &&
-                    !isValidDayOfWeek(dayOfWeek)
-                ) {
-                    alert(
-                        'Invalid  day of week.(Please use a valid day (e.g, Sunday, Monday etc.)',
-                    )
-                    return
-                }
-
-                const id = Math.floor(Math.random() * 1000)
-                const newEntry: FinancesEntry = {
-                    id,
-                    value,
-                    category,
-                    fixedInterval,
-                    dayOfWeek:
-                        fixedInterval === 'weekly' ? dayOfWeek : undefined,
-                    month: fixedInterval === 'monthly' ? month : undefined,
-                    year: fixedInterval === 'annual' ? year : undefined,
-                }
-                update(entries => [...entries, newEntry])
+            add: (entry: FinancesEntry | Record<string, string>) => {
+                //const id = new Crypto().randomUUID()
+                update(entries => [...entries, entry as FinancesEntry])
             },
         }
     }
@@ -98,93 +42,77 @@
     const finances = createNewEntrys([])
 </script>
 
-<main>
-    <h1 class="flex justify-center">My Finances</h1>
-
-    <Dialog>
-        <div>
-            <input type="number" bind:value placeholder="Value" />
-            <input type="text" bind:value={category} placeholder="Category" />
-            <select bind:value={fixedInterval}>
-                <option value="not fixed">Not Fixed</option>
-                <option value="daily">Daily</option>
-                <option value="weekly">Weekly</option>
-                <option value="monthly">Monthly</option>
-                <option value="annual">Annual</option>
-            </select>
-            {#if fixedInterval === 'weekly'}
-                <input
-                    type="text"
-                    bind:value={dayOfWeek}
-                    placeholder={dateInputPlaceholder}
-                />
-            {:else if fixedInterval === 'monthly'}
-                <input
-                    type="text"
-                    bind:value={month}
-                    placeholder={dateInputPlaceholder}
-                />
-            {:else if fixedInterval === 'annual'}
-                <input
-                    type="text"
-                    bind:value={year}
-                    placeholder={dateInputPlaceholder}
+<main class="container relative mx-auto py-8">
+    <Button
+        variant="secondary"
+        on:click={() => {
+            open = true
+        }}
+    >
+        Add entry
+    </Button>
+    <Dialog bind:open>
+        <form
+            class="flex flex-col gap-4"
+            on:submit={e => {
+                const form = e.currentTarget
+                const form_data = new FormData(form)
+                const entries = Object.fromEntries(
+                    // gambi pra transformar uma pseudo array em array
+                    [...form_data.entries()].map(([k, v]) => [k, v.toString()]),
+                )
+                console.log(`🚀 ~ entries:`, entries)
+                finances.add(entries)
+            }}
+        >
+            <Input name="amount" type="number" label="Amount" />
+            <Input name="category" label="Category" />
+            <Select
+                label="Reocurrency"
+                options={[
+                    {
+                        label: 'Not Fixed',
+                        value: 'not fixed',
+                    },
+                    {
+                        label: 'Daily',
+                        value: 'daily',
+                    },
+                    {
+                        label: 'Weekly',
+                        value: 'weekly',
+                    },
+                    {
+                        label: 'Monthly',
+                        value: 'monthly',
+                    },
+                    {
+                        label: 'Annual',
+                        value: 'annual',
+                    },
+                ]}
+                bind:selected={fixedInterval}
+            />
+            {#if reocurrency_labels[fixedInterval]}
+                <Input
+                    name="ocurrency"
+                    label={reocurrency_labels[fixedInterval]}
                 />
             {/if}
-            <button
-                tabindex="0"
-                on:click={() => {
-                    if (value && fixedInterval) {
-                        finances.add(
-                            value,
-                            category,
-                            fixedInterval,
-                            dayOfWeek,
-                            month,
-                            year,
-                        )
-                    } else {
-                        alert(
-                            'Please fill in the value field with a positive or negative number to gerate a new credit or debit.',
-                        )
-                    }
-                }}
-                on:keydown={event => {
-                    if (event.key === 'Enter') {
-                        if (value && fixedInterval) {
-                            finances.add(
-                                value,
-                                category,
-                                fixedInterval,
-                                dayOfWeek,
-                                month,
-                                year,
-                            )
-                        } else {
-                            alert(
-                                'Please fill in the value field with a positive or negative number to gerate a new credit or debit.',
-                            )
-                        }
-                    }
-                }}
+            <Button
+                type="submit"
+                class="ml-auto rounded-none after:rounded-none"
             >
-                Add Entry
-            </button>
-        </div>
+                Save
+            </Button>
+        </form>
     </Dialog>
     <ul>
-        {#each $finances as entry (entry.id)}
-            <li>
-                Value: {entry.value} | Category: {entry.category} | Interval: {entry.fixedInterval}
-                {#if entry.fixedInterval === 'weekly' || entry.fixedInterval === 'monthly' || entry.fixedInterval === 'annual'}
-                    | Date: {entry.dayOfWeek ||
-                        entry.month ||
-                        entry.year ||
-                        undefined}
-                {/if}
+        {#each $finances as entry}
+            <li class="dark:text-white">
+                Value: {entry.amount} | Category: {entry.category} | Interval: {entry.fixedInterval}
+                | Date: {entry.reocurrency}
             </li>
         {/each}
     </ul>
 </main>
-
-<!-- hello -->
