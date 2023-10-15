@@ -3,16 +3,9 @@
     import Input from '$lib/components/input.svelte'
     import Select from '$lib/components/select.svelte'
     import Dialog from '$lib/components/Dialog.svelte'
-    import { writable } from 'svelte/store'
+    import { entries, type FinanceEntry } from '$lib/store/entries'
 
     let open = false
-
-    type FinancesEntry = {
-        amount: string
-        category?: string
-        fixedInterval: 'not fixed' | 'daily' | 'weekly' | 'monthly' | 'annual'
-        reocurrency?: string
-    }
 
     let fixedInterval: 'not fixed' | 'daily' | 'weekly' | 'monthly' | 'annual' =
         'not fixed'
@@ -23,26 +16,22 @@
         annual: 'Day of the year',
     }
 
-    function createNewEntrys(initialValue?: FinancesEntry[]) {
-        if (!initialValue) throw new Error('No initial value')
-        const { subscribe, update, set } =
-            writable<FinancesEntry[]>(initialValue)
-
-        return {
-            subscribe,
-            update,
-            set,
-            add: (entry: FinancesEntry | Record<string, string>) => {
-                //const id = new Crypto().randomUUID()
-                update(entries => [...entries, entry as FinancesEntry])
-            },
-        }
+    const on_submit = (
+        e: SubmitEvent & {
+            currentTarget: HTMLFormElement
+        },
+    ) => {
+        const form = e.currentTarget
+        const form_data = new FormData(form)
+        const entry = Object.fromEntries(
+            // gambi pra transformar uma pseudo array em array
+            [...form_data.entries()].map(([k, v]) => [k, v.toString()]),
+        ) as FinanceEntry
+        $entries = [...$entries, entry]
     }
-
-    const finances = createNewEntrys([])
 </script>
 
-<main class="container relative mx-auto py-8">
+<main class="container relative mx-auto py-8 max-sm:px-4">
     <Button
         variant="secondary"
         on:click={() => {
@@ -52,19 +41,7 @@
         Add entry
     </Button>
     <Dialog bind:open>
-        <form
-            class="flex flex-col gap-4"
-            on:submit={e => {
-                const form = e.currentTarget
-                const form_data = new FormData(form)
-                const entries = Object.fromEntries(
-                    // gambi pra transformar uma pseudo array em array
-                    [...form_data.entries()].map(([k, v]) => [k, v.toString()]),
-                )
-                console.log(`🚀 ~ entries:`, entries)
-                finances.add(entries)
-            }}
-        >
+        <form class="flex flex-col gap-4" on:submit={on_submit}>
             <Input name="amount" type="number" label="Amount" />
             <Input name="category" label="Category" />
             <Select
@@ -99,16 +76,11 @@
                     label={reocurrency_labels[fixedInterval]}
                 />
             {/if}
-            <Button
-                type="submit"
-                class="ml-auto rounded-none after:rounded-none"
-            >
-                Save
-            </Button>
+            <Button type="submit" class="mt-2 w-full">Save</Button>
         </form>
     </Dialog>
     <ul>
-        {#each $finances as entry}
+        {#each $entries as entry}
             <li class="dark:text-white">
                 Value: {entry.amount} | Category: {entry.category} | Interval: {entry.fixedInterval}
                 | Date: {entry.reocurrency}
