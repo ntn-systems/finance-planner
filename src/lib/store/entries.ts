@@ -2,6 +2,8 @@ import { browser } from '$app/environment'
 import { writable } from 'svelte/store'
 
 export type FinanceEntry = {
+
+    id: number
     amount: string
     category?: string
     fixedInterval: 'not fixed' | 'daily' | 'weekly' | 'monthly' | 'annual'

@@ -4,7 +4,6 @@
     import Select from '$lib/components/select.svelte'
     import Dialog from '$lib/components/Dialog.svelte'
     import { entries, type FinanceEntry } from '$lib/store/entries'
-    import { updated } from '$app/stores'
 
     let open = false
 
@@ -29,11 +28,11 @@
         const entry = Object.fromEntries(
             // gambi pra transformar uma pseudo array em array
             [...form_data.entries()].map(([k, v]) => [k, v.toString()]),
-        ) as FinanceEntry
+        ) as unknown as FinanceEntry
         console.log('🚀 ~ file: +page.svelte:30 ~ entry:', entry)
         $entries = [...$entries, entry]
     }
-    function deleteEntry(entryFindId) {
+    function deleteEntry(entryFindId: number) {
         const index = $entries.findIndex(entry => entry.id === entryFindId)
         if (index !== -1) {
             $entries = [
