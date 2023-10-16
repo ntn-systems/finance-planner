@@ -4,6 +4,7 @@
     import Select from '$lib/components/select.svelte'
     import Dialog from '$lib/components/Dialog.svelte'
     import { entries, type FinanceEntry } from '$lib/store/entries'
+    import { updated } from '$app/stores'
 
     let open = false
 
@@ -21,13 +22,25 @@
             currentTarget: HTMLFormElement
         },
     ) => {
+        e.preventDefault()
         const form = e.currentTarget
         const form_data = new FormData(form)
+        console.log('🚀 ~ file: +page.svelte:26 ~ form_data:', form_data)
         const entry = Object.fromEntries(
             // gambi pra transformar uma pseudo array em array
             [...form_data.entries()].map(([k, v]) => [k, v.toString()]),
         ) as FinanceEntry
+        console.log('🚀 ~ file: +page.svelte:30 ~ entry:', entry)
         $entries = [...$entries, entry]
+    }
+    function deleteEntry(entryFindId) {
+        const index = $entries.findIndex(entry => entry.id === entryFindId)
+        if (index !== -1) {
+            $entries = [
+                ...$entries.slice(0, index),
+                ...$entries.slice(index + 1),
+            ]
+        }
     }
 </script>
 
@@ -46,6 +59,7 @@
             <Input name="category" label="Category" />
             <Select
                 label="Reocurrency"
+                name="reocurrency"
                 options={[
                     {
                         label: 'Not Fixed',
@@ -79,11 +93,13 @@
             <Button type="submit" class="mt-2 w-full">Save</Button>
         </form>
     </Dialog>
-    <ul>
+    <ul class="mt-4">
         {#each $entries as entry}
             <li class="dark:text-white">
-                Value: {entry.amount} | Category: {entry.category} | Interval: {entry.fixedInterval}
+                Value: {entry.amount} | Category: {entry.category || 'Empty'} | Interval:
+                {entry.fixedInterval}
                 | Date: {entry.reocurrency}
+                <button on:click={() => deleteEntry(entry.id)}>Delete</button>
             </li>
         {/each}
     </ul>
