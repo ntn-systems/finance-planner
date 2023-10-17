@@ -8,10 +8,17 @@
     import { validators } from 'tailwind-merge'
 
     let open = false
-    const totalEarnings = $entries
+    let nextEntryId = 1
+
+    function generateUniqueID() {
+        const uniqueId = nextEntryId
+        nextEntryId += 1
+        return uniqueId
+    }
+    $: totalEarnings = $entries
         .filter(e => Number(e.amount) > 0)
         .reduce((acc, curr) => Number(curr.amount) + acc, 0)
-    const totalSpendings = $entries
+    $: totalSpendings = $entries
         .filter(e => Number(e.amount) < 0)
         .reduce((acc, curr) => Number(curr.amount) + acc, 0)
 
@@ -32,7 +39,7 @@
     //     [0, 0],
     // )
 
-    const totalValue = totalEarnings + totalSpendings
+    $: totalValue = totalEarnings + totalSpendings
 
     let fixedInterval: 'not fixed' | 'daily' | 'weekly' | 'monthly' | 'annual' =
         'not fixed'
@@ -52,13 +59,17 @@
         const form = e.currentTarget
         const form_data = new FormData(form)
         console.log('🚀 ~ file: +page.svelte:26 ~ form_data:', form_data)
-        const entry = Object.fromEntries(
-            // gambi pra transformar uma pseudo array em array
-            [...form_data.entries()].map(([k, v]) => [k, v.toString()]),
-        ) as unknown as FinanceEntry
-        console.log('🚀 ~ file: +page.svelte:30 ~ entry:', entry)
+        const nextEntryId = generateUniqueID()
+        const entry = {
+            id: nextEntryId,
+            ...Object.fromEntries(
+                [...form_data.entries()].map(([k, v]) => [k, v.toString()]),
+            ),
+        } as FinanceEntry
+
         $entries = [...$entries, entry]
     }
+
     function deleteEntry(entryFindId: number) {
         const index = $entries.findIndex(entry => entry.id === entryFindId)
         if (index !== -1) {
@@ -82,6 +93,10 @@
     >
         Add entry
     </Button>
+    <p class="mb-4 mt-4 flex justify-center gap-4 text-white">
+        You have spended ${totalSpendings} and you have earned ${totalEarnings}
+        for a total of ${totalValue}
+    </p>
     <Dialog bind:open>
         <form class="flex flex-col gap-4" on:submit={on_submit}>
             <Input name="amount" type="number" label="Amount" />
@@ -122,23 +137,42 @@
             <Button type="submit" class="mt-2 w-full">Save</Button>
         </form>
     </Dialog>
-    <ul class="mt-4">
-        {#each $entries as entry}
-            {@const value = Number(entry.amount)}
-            {@const isNegative = value < 0}
-            <li
-                class:text-red-400={isNegative}
-                class:text-blue-400={!isNegative}
-            >
-                Value: {entry.amount} | Category: {entry.category || 'Empty'} | Interval:
-                {entry.fixedInterval}
-                | Date: {entry.reocurrency}
-                <button on:click={() => deleteEntry(entry.id)}>Delete</button>
-            </li>
-        {/each}
-    </ul>
-    <p>
-        `You have spended ${totalSpendings} and you have earned ${totalEarnings}
-        for a total of ${totalValue}`
-    </p>
+    <div class="mx-auto mb-auto ml-auto mr-auto mt-auto flex">
+        <div class="col-auto w-1/2">
+            {#each $entries as entry}
+                {@const value = Number(entry.amount)}
+                {@const isNegative = value < 0}
+                {#if isNegative}
+                    <div class="text-red-400">
+                        Value: {entry.amount} | Category: {entry.category ||
+                            'Empty'} | Interval: {entry.fixedInterval} | Date: {entry.reocurrency}
+                        <Button
+                            class="ml-3 inline-block gap-4"
+                            on:click={() => deleteEntry(entry.id)}
+                        >
+                            Delete
+                        </Button>
+                    </div>
+                {/if}
+            {/each}
+        </div>
+        <div class="w-1/2">
+            {#each $entries as entry}
+                {@const value = Number(entry.amount)}
+                {@const isNegative = value < 0}
+                {#if !isNegative}
+                    <div class="text-blue-400">
+                        Value: {entry.amount} | Category: {entry.category ||
+                            'Empty'} | Interval: {entry.fixedInterval} | Date: {entry.reocurrency}
+                        <Button
+                            class="ml-3 inline-block gap-4"
+                            on:click={() => deleteEntry(entry.id)}
+                        >
+                            Delete
+                        </Button>
+                    </div>
+                {/if}
+            {/each}
+        </div>
+    </div>
 </main>
