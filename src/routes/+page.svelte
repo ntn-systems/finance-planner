@@ -8,13 +8,7 @@
     import { validators } from 'tailwind-merge'
 
     let open = false
-    let nextEntryId = 1
 
-    function generateUniqueID() {
-        const uniqueId = nextEntryId
-        nextEntryId += 1
-        return uniqueId
-    }
     $: totalEarnings = $entries
         .filter(e => Number(e.amount) > 0)
         .reduce((acc, curr) => Number(curr.amount) + acc, 0)
@@ -59,9 +53,8 @@
         const form = e.currentTarget
         const form_data = new FormData(form)
         console.log('🚀 ~ file: +page.svelte:26 ~ form_data:', form_data)
-        const nextEntryId = generateUniqueID()
         const entry = {
-            id: nextEntryId,
+            id: crypto.randomUUID(),
             ...Object.fromEntries(
                 [...form_data.entries()].map(([k, v]) => [k, v.toString()]),
             ),
@@ -70,7 +63,7 @@
         $entries = [...$entries, entry]
     }
 
-    function deleteEntry(entryFindId: number) {
+    function deleteEntry(entryFindId: number | string) {
         const index = $entries.findIndex(entry => entry.id === entryFindId)
         if (index !== -1) {
             $entries = [
@@ -143,7 +136,7 @@
                 {@const value = Number(entry.amount)}
                 {@const isNegative = value < 0}
                 {#if isNegative}
-                    <div class="text-red-400">
+                    <div class="mt-4 text-red-400">
                         Value: {entry.amount} | Category: {entry.category ||
                             'Empty'} | Interval: {entry.fixedInterval} | Date: {entry.reocurrency}
                         <Button
@@ -161,7 +154,7 @@
                 {@const value = Number(entry.amount)}
                 {@const isNegative = value < 0}
                 {#if !isNegative}
-                    <div class="text-blue-400">
+                    <div class="mt-4 text-blue-400">
                         Value: {entry.amount} | Category: {entry.category ||
                             'Empty'} | Interval: {entry.fixedInterval} | Date: {entry.reocurrency}
                         <Button

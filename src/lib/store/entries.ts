@@ -3,7 +3,7 @@ import { writable } from 'svelte/store'
 
 export type FinanceEntry = {
 
-    id: number
+    id: number | string
     amount: string
     category?: string
     fixedInterval: 'not fixed' | 'daily' | 'weekly' | 'monthly' | 'annual'
@@ -25,3 +25,4 @@ entries.subscribe(state => {
         localStorage['finance-planner-state'] = JSON.stringify(state)
     }
 })
+entries.subscribe(console.log)
