@@ -4,8 +4,35 @@
     import Select from '$lib/components/select.svelte'
     import Dialog from '$lib/components/Dialog.svelte'
     import { entries, type FinanceEntry } from '$lib/store/entries'
+    import { writable } from 'svelte/store'
+    import { validators } from 'tailwind-merge'
 
     let open = false
+    const totalEarnings = $entries
+        .filter(e => Number(e.amount) > 0)
+        .reduce((acc, curr) => Number(curr.amount) + acc, 0)
+    const totalSpendings = $entries
+        .filter(e => Number(e.amount) < 0)
+        .reduce((acc, curr) => Number(curr.amount) + acc, 0)
+
+    // const [negative, positive] = $entries.reduce(
+    //     (acc, curr) => {
+    //         const value = Number(curr.amount)
+    //         if (value < 0) {
+    //             return [acc[0] + value, acc[1]]
+    //         } else return [acc[0], acc[1] + value]
+    //     },
+    //     [0, 0],
+    // )
+    // const [minus, plus] = $entries.reduce(
+    //     (a, c) =>
+    //         Number(c.amount) < 0
+    //             ? [a[0] + Number(c.amount), a[1]]
+    //             : [a[0], a[1] + Number(c.amount)],
+    //     [0, 0],
+    // )
+
+    const totalValue = totalEarnings + totalSpendings
 
     let fixedInterval: 'not fixed' | 'daily' | 'weekly' | 'monthly' | 'annual' =
         'not fixed'
@@ -41,6 +68,9 @@
             ]
         }
     }
+
+    console.log(totalEarnings)
+    console.log(totalSpendings)
 </script>
 
 <main class="container relative mx-auto py-8 max-sm:px-4">
@@ -94,7 +124,12 @@
     </Dialog>
     <ul class="mt-4">
         {#each $entries as entry}
-            <li class="dark:text-white">
+            {@const value = Number(entry.amount)}
+            {@const isNegative = value < 0}
+            <li
+                class:text-red-400={isNegative}
+                class:text-blue-400={!isNegative}
+            >
                 Value: {entry.amount} | Category: {entry.category || 'Empty'} | Interval:
                 {entry.fixedInterval}
                 | Date: {entry.reocurrency}
@@ -102,4 +137,8 @@
             </li>
         {/each}
     </ul>
+    <p>
+        `You have spended ${totalSpendings} and you have earned ${totalEarnings}
+        for a total of ${totalValue}`
+    </p>
 </main>
