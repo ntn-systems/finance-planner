@@ -4,6 +4,7 @@
     import Select from '$lib/components/select.svelte'
     import Dialog from '$lib/components/Dialog.svelte'
     import { entries, type FinanceEntry } from '$lib/store/entries'
+    import { z } from 'zod'
 
     let open = false
 
@@ -41,6 +42,16 @@
         monthly: 'Ocurring day',
         annual: 'Day of the year',
     }
+
+    const categorySchema = z.string().refine(
+        category => {
+            return !/^\d+$/.test(category)
+        },
+        { message: 'Category cannot contain only numbers' },
+    )
+
+    const testValidCategory = 'Car123'
+    const testInvalidCategory = '12345'
 
     const on_submit = (
         e: SubmitEvent & {
