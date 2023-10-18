@@ -50,9 +50,6 @@
         { message: 'Category cannot contain only numbers' },
     )
 
-    const testValidCategory = 'Car123'
-    const testInvalidCategory = '12345'
-
     const on_submit = (
         e: SubmitEvent & {
             currentTarget: HTMLFormElement
@@ -61,6 +58,13 @@
         e.preventDefault()
         const form = e.currentTarget
         const form_data = new FormData(form)
+        const category = form_data.get('category') as string
+        try {
+            categorySchema.parse(category)
+        } catch (error) {
+            console.error(error.message)
+            return
+        }
         console.log('🚀 ~ file: +page.svelte:26 ~ form_data:', form_data)
         const entry = {
             id: crypto.randomUUID(),
@@ -81,9 +85,6 @@
             ]
         }
     }
-
-    console.log(totalEarnings)
-    console.log(totalSpendings)
 </script>
 
 <main class="container relative mx-auto py-8 max-sm:px-4">
