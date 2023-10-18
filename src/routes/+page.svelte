@@ -4,8 +4,6 @@
     import Select from '$lib/components/select.svelte'
     import Dialog from '$lib/components/Dialog.svelte'
     import { entries, type FinanceEntry } from '$lib/store/entries'
-    import { writable } from 'svelte/store'
-    import { validators } from 'tailwind-merge'
 
     let open = false
 
