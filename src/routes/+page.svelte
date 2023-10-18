@@ -43,6 +43,8 @@
         annual: 'Day of the year',
     }
 
+    const valueSchema = z.number().safe().finite()
+
     const categorySchema = z.string().refine(
         category => {
             return !/^\d+$/.test(category)
@@ -66,6 +68,13 @@
             return
         }
         console.log('🚀 ~ file: +page.svelte:26 ~ form_data:', form_data)
+        const amount = form_data.get('amount') as string
+        try {
+            valueSchema.parse(Number(amount))
+        } catch (error) {
+            alert('Invalid Number')
+            return
+        }
         const entry = {
             id: crypto.randomUUID(),
             ...Object.fromEntries(
