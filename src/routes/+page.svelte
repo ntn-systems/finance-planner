@@ -62,7 +62,7 @@
         try {
             categorySchema.parse(category)
         } catch (error) {
-            console.error(error.message)
+            alert('Category cannot contain only numbers')
             return
         }
         console.log('🚀 ~ file: +page.svelte:26 ~ form_data:', form_data)
