@@ -25,23 +25,48 @@
         annual: 'Day of the year',
     }
 
-    const weeklySchema = z.string().refine(day => {
-        const validDaysOfWeek = [
-            'sunday',
-            'monday',
-            'tuesday',
-            'wednesday',
-            'thursday',
-            'friday',
-            'saturday',
-        ]
-        return validDaysOfWeek.includes(day)
-    })
+    const weeklySchema = z.string().refine(
+        day => {
+            const validDaysOfWeek = [
+                'sunday',
+                'monday',
+                'tuesday',
+                'wednesday',
+                'thursday',
+                'friday',
+                'saturday',
+            ]
+            return validDaysOfWeek.includes(day)
+        },
+        {
+            message: 'Error!!!!',
+        },
+    )
 
-    const monthlySchema = z.string().refine(day => {
-        const validDayNumber = /^\d{2}$/
-        return validDayNumber.test(day)
-    })
+    try {
+        console.log(weeklySchema.parse('sunday'))
+        console.log(weeklySchema.parse('monday'))
+        console.log(weeklySchema.parse('saturday'))
+    } catch (error) {
+        console.error(error.message)
+    }
+
+    const monthlySchema = z.string().refine(
+        day => {
+            const parsedDay = parseInt(day, 10)
+            return !isNaN(parsedDay) && parsedDay >= 1 && parsedDay <= 31
+        },
+        {
+            message: 'Error!!!!',
+        },
+    )
+    // try {
+    //     console.log(monthlySchema.parse('10'))
+    //     console.log(monthlySchema.parse('31'))
+    //     console.log(monthlySchema.parse('25'))
+    // } catch (error) {
+    //     console.error(error.message)
+    // }
 
     const annualSchema = z.string().refine(day => {
         const validDayAndMonth = /^\d{2}\/\d{2}$/
