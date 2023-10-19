@@ -43,6 +43,11 @@
         return validDayNumber.test(day)
     })
 
+    const annualSchema = z.string().refine(day => {
+        const validDayAndMonth = /^\d{2}\/\d{2}$/
+        return validDayAndMonth.test(day)
+    })
+
     const valueSchema = z.number().safe().finite()
 
     const categorySchema = z.string().refine(
