@@ -38,6 +38,11 @@
         return validDaysOfWeek.includes(day)
     })
 
+    const monthlySchema = z.string().refine(day => {
+        const validDayNumber = /^\d{2}$/
+        return validDayNumber.test(day)
+    })
+
     const valueSchema = z.number().safe().finite()
 
     const categorySchema = z.string().refine(
