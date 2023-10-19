@@ -27,6 +27,7 @@
 
     const weeklySchema = z.string().refine(
         day => {
+            day = day.toLowerCase()
             const validDaysOfWeek = [
                 'sunday',
                 'monday',
@@ -46,7 +47,7 @@
     try {
         console.log(weeklySchema.parse('sunday'))
         console.log(weeklySchema.parse('monday'))
-        console.log(weeklySchema.parse('saturday'))
+        console.log(weeklySchema.parse('Saturday'))
     } catch (error) {
         console.error(error.message)
     }
