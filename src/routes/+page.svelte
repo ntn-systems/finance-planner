@@ -7,6 +7,8 @@
     import { z } from 'zod'
 
     let open = false
+    let fixedInterval: 'not fixed' | 'daily' | 'weekly' | 'monthly' | 'annual' =
+        'not fixed'
 
     $: totalEarnings = $entries
         .filter(e => Number(e.amount) > 0)
@@ -15,33 +17,26 @@
         .filter(e => Number(e.amount) < 0)
         .reduce((acc, curr) => Number(curr.amount) + acc, 0)
 
-    // const [negative, positive] = $entries.reduce(
-    //     (acc, curr) => {
-    //         const value = Number(curr.amount)
-    //         if (value < 0) {
-    //             return [acc[0] + value, acc[1]]
-    //         } else return [acc[0], acc[1] + value]
-    //     },
-    //     [0, 0],
-    // )
-    // const [minus, plus] = $entries.reduce(
-    //     (a, c) =>
-    //         Number(c.amount) < 0
-    //             ? [a[0] + Number(c.amount), a[1]]
-    //             : [a[0], a[1] + Number(c.amount)],
-    //     [0, 0],
-    // )
-
     $: totalValue = totalEarnings + totalSpendings
-
-    let fixedInterval: 'not fixed' | 'daily' | 'weekly' | 'monthly' | 'annual' =
-        'not fixed'
 
     const reocurrency_labels: Record<string, string> = {
         weekly: 'Day of the Week',
         monthly: 'Ocurring day',
         annual: 'Day of the year',
     }
+
+    const weeklySchema = z.string().refine(day => {
+        const validDaysOfWeek = [
+            'sunday',
+            'monday',
+            'tuesday',
+            'wednesday',
+            'thursday',
+            'friday',
+            'saturday',
+        ]
+        return validDaysOfWeek.includes(day)
+    })
 
     const valueSchema = z.number().safe().finite()
 
@@ -188,3 +183,20 @@
         </div>
     </div>
 </main>
+
+<!-- // const [negative, positive] = $entries.reduce(
+    //     (acc, curr) => {
+    //         const value = Number(curr.amount)
+    //         if (value < 0) {
+    //             return [acc[0] + value, acc[1]]
+    //         } else return [acc[0], acc[1] + value]
+    //     },
+    //     [0, 0],
+    // )
+    // const [minus, plus] = $entries.reduce(
+    //     (a, c) =>
+    //         Number(c.amount) < 0
+    //             ? [a[0] + Number(c.amount), a[1]]
+    //             : [a[0], a[1] + Number(c.amount)],
+    //     [0, 0],
+    // ) -->
