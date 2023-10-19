@@ -44,13 +44,13 @@
         },
     )
 
-    try {
-        console.log(weeklySchema.parse('sunday'))
-        console.log(weeklySchema.parse('monday'))
-        console.log(weeklySchema.parse('Saturday'))
-    } catch (error) {
-        console.error(error.message)
-    }
+    // try {
+    //     console.log(weeklySchema.parse('sunday'))
+    //     console.log(weeklySchema.parse('monday'))
+    //     console.log(weeklySchema.parse('Saturday'))
+    // } catch (error) {
+    //     console.error(error.message)
+    // }
 
     const monthlySchema = z.string().refine(
         day => {
@@ -73,6 +73,14 @@
         const validDayAndMonth = /^\d{2}\/\d{2}$/
         return validDayAndMonth.test(day)
     })
+
+    try {
+        console.log(annualSchema.parse('06/12'))
+        console.log(annualSchema.parse('monday'))
+        console.log(annualSchema.parse('Saturday'))
+    } catch (error) {
+        console.error(error.message)
+    }
 
     const valueSchema = z.number().safe().finite()
 
