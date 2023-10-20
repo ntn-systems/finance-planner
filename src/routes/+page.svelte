@@ -1,14 +1,10 @@
 <script lang="ts">
     import Button from '$lib/components/Button.svelte'
-    import Input from '$lib/components/input.svelte'
-    import Select from '$lib/components/select.svelte'
-    import Dialog from '$lib/components/Dialog.svelte'
-    import { entries, type FinanceEntry } from '$lib/store/entries'
-    import { z } from 'zod'
+    import { entries } from '$lib/store/entries'
+    import AddEntryDialog from './add-entry-dialog.svelte'
 
-    let open = false
-    let fixedInterval: 'not fixed' | 'daily' | 'weekly' | 'monthly' | 'annual' =
-        'not fixed'
+    let error = false
+    $: console.log(`🚀 ~ error:`, error)
 
     $: totalEarnings = $entries
         .filter(e => Number(e.amount) > 0)
@@ -18,111 +14,6 @@
         .reduce((acc, curr) => Number(curr.amount) + acc, 0)
 
     $: totalValue = totalEarnings + totalSpendings
-
-    const reocurrency_labels: Record<string, string> = {
-        weekly: 'Day of the Week',
-        monthly: 'Ocurring day',
-        annual: 'Day of the year',
-    }
-
-    const weeklySchema = z.string().refine(
-        day => {
-            day = day.toLowerCase()
-            const validDaysOfWeek = [
-                'sunday',
-                'monday',
-                'tuesday',
-                'wednesday',
-                'thursday',
-                'friday',
-                'saturday',
-            ]
-            return validDaysOfWeek.includes(day)
-        },
-        {
-            message: 'Error!!!!',
-        },
-    )
-
-    // try {
-    //     console.log(weeklySchema.parse('sunday'))
-    //     console.log(weeklySchema.parse('monday'))
-    //     console.log(weeklySchema.parse('Saturday'))
-    // } catch (error) {
-    //     console.error(error.message)
-    // }
-
-    const monthlySchema = z.string().refine(
-        day => {
-            const parsedDay = parseInt(day, 10)
-            return !isNaN(parsedDay) && parsedDay >= 1 && parsedDay <= 31
-        },
-        {
-            message: 'Error!!!!',
-        },
-    )
-    // try {
-    //     console.log(monthlySchema.parse('10'))
-    //     console.log(monthlySchema.parse('31'))
-    //     console.log(monthlySchema.parse('25'))
-    // } catch (error) {
-    //     console.error(error.message)
-    // }
-
-    const annualSchema = z.string().refine(day => {
-        const validDayAndMonth = /^\d{2}\/\d{2}$/
-        return validDayAndMonth.test(day)
-    })
-
-    try {
-        console.log(annualSchema.parse('06/12'))
-        console.log(annualSchema.parse('monday'))
-        console.log(annualSchema.parse('Saturday'))
-    } catch (error) {
-        console.error(error.message)
-    }
-
-    const valueSchema = z.number().safe().finite()
-
-    const categorySchema = z.string().refine(
-        category => {
-            return !/^\d+$/.test(category)
-        },
-        { message: 'Category cannot contain only numbers' },
-    )
-
-    const on_submit = (
-        e: SubmitEvent & {
-            currentTarget: HTMLFormElement
-        },
-    ) => {
-        e.preventDefault()
-        const form = e.currentTarget
-        const form_data = new FormData(form)
-        const category = form_data.get('category') as string
-        try {
-            categorySchema.parse(category)
-        } catch (error) {
-            alert('Category cannot contain only numbers')
-            return
-        }
-        console.log('🚀 ~ file: +page.svelte:26 ~ form_data:', form_data)
-        const amount = form_data.get('amount') as string
-        try {
-            valueSchema.parse(Number(amount))
-        } catch (error) {
-            alert('Invalid Number')
-            return
-        }
-        const entry = {
-            id: crypto.randomUUID(),
-            ...Object.fromEntries(
-                [...form_data.entries()].map(([k, v]) => [k, v.toString()]),
-            ),
-        } as FinanceEntry
-
-        $entries = [...$entries, entry]
-    }
 
     function deleteEntry(entryFindId: number | string) {
         const index = $entries.findIndex(entry => entry.id === entryFindId)
@@ -136,58 +27,16 @@
 </script>
 
 <main class="container relative mx-auto py-8 max-sm:px-4">
-    <Button
-        variant="secondary"
-        on:click={() => {
-            open = true
+    <AddEntryDialog
+        on:submit={e => {
+            if (e.detail) $entries = [...$entries, e.detail]
+            else error = true
         }}
-    >
-        Add entry
-    </Button>
+    />
     <p class="mb-4 mt-4 flex justify-center gap-4 text-white">
         You have spended ${totalSpendings} and you have earned ${totalEarnings}
         for a total of ${totalValue}
     </p>
-    <Dialog bind:open>
-        <form class="flex flex-col gap-4" on:submit={on_submit}>
-            <Input name="amount" type="number" label="Amount" />
-            <Input name="category" label="Category" />
-            <Select
-                label="Reocurrency"
-                name="reocurrency"
-                options={[
-                    {
-                        label: 'Not Fixed',
-                        value: 'not fixed',
-                    },
-                    {
-                        label: 'Daily',
-                        value: 'daily',
-                    },
-                    {
-                        label: 'Weekly',
-                        value: 'weekly',
-                    },
-                    {
-                        label: 'Monthly',
-                        value: 'monthly',
-                    },
-                    {
-                        label: 'Annual',
-                        value: 'annual',
-                    },
-                ]}
-                bind:selected={fixedInterval}
-            />
-            {#if reocurrency_labels[fixedInterval]}
-                <Input
-                    name="ocurrency"
-                    label={reocurrency_labels[fixedInterval]}
-                />
-            {/if}
-            <Button type="submit" class="mt-2 w-full">Save</Button>
-        </form>
-    </Dialog>
     <div class="mx-auto mb-auto ml-auto mr-auto mt-auto flex">
         <div class="col-auto w-1/2">
             {#each $entries as entry}
@@ -227,20 +76,3 @@
         </div>
     </div>
 </main>
-
-<!-- // const [negative, positive] = $entries.reduce(
-    //     (acc, curr) => {
-    //         const value = Number(curr.amount)
-    //         if (value < 0) {
-    //             return [acc[0] + value, acc[1]]
-    //         } else return [acc[0], acc[1] + value]
-    //     },
-    //     [0, 0],
-    // )
-    // const [minus, plus] = $entries.reduce(
-    //     (a, c) =>
-    //         Number(c.amount) < 0
-    //             ? [a[0] + Number(c.amount), a[1]]
-    //             : [a[0], a[1] + Number(c.amount)],
-    //     [0, 0],
-    // ) -->

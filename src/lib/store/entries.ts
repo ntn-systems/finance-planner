@@ -1,14 +1,6 @@
 import { browser } from '$app/environment'
 import { writable } from 'svelte/store'
-
-export type FinanceEntry = {
-
-    id: number | string
-    amount: string
-    category?: string
-    fixedInterval: 'not fixed' | 'daily' | 'weekly' | 'monthly' | 'annual'
-    reocurrency?: string
-}
+import type { FinanceEntry } from './entries-validator'
 
 const initial_state = () => {
     if (browser) {
@@ -26,3 +18,5 @@ entries.subscribe(state => {
     }
 })
 entries.subscribe(console.log)
+
+export type { FinanceEntry }

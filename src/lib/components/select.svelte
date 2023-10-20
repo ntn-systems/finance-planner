@@ -6,6 +6,7 @@
     const dispatch = createEventDispatcher()
 
     let open = false
+    export let name: string | undefined = undefined
     export let selected: string | string[] | null = null
     export let options: Array<{
         label: string
@@ -82,7 +83,7 @@
             {label}
         </span>
     {/if}
-    <input type="hidden" value={selected} />
+    <input type="hidden" {name} value={selected} />
     <div class="relative w-full">
         <button
             type="button"
