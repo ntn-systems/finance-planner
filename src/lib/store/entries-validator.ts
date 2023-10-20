@@ -102,7 +102,7 @@ export const is_finance_entry: (
             ...validated,
             fixedInterval: reocurrencyDayParserDict[
                 validated.reocurrency
-            ].parse(validated.fixedInterval),
+            ]?.parse(validated.fixedInterval),
         }
 
         return interval_validated

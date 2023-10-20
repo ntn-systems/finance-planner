@@ -3,9 +3,6 @@
     import { entries } from '$lib/store/entries'
     import AddEntryDialog from './add-entry-dialog.svelte'
 
-    let error = false
-    $: console.log(`🚀 ~ error:`, error)
-
     $: totalEarnings = $entries
         .filter(e => Number(e.amount) > 0)
         .reduce((acc, curr) => Number(curr.amount) + acc, 0)
@@ -30,7 +27,6 @@
     <AddEntryDialog
         on:submit={e => {
             if (e.detail) $entries = [...$entries, e.detail]
-            else error = true
         }}
     />
     <p class="mb-4 mt-4 flex justify-center gap-4 text-white">

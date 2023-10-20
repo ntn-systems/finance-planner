@@ -9,6 +9,9 @@
     const dispatch = createEventDispatcher()
 
     let open = false
+    let error = false
+    $: console.log(`🚀 ~ error:`, error)
+
     let fixedInterval: 'not fixed' | 'daily' | 'weekly' | 'monthly' | 'annual' =
         'not fixed'
 
@@ -30,6 +33,8 @@
         const entry = is_finance_entry(form_data)
         console.log(`🚀 ~ entry:`, entry)
         dispatch('submit', entry)
+        if (!entry) error = true
+        form.reset()
     }
 </script>
 
@@ -43,8 +48,8 @@
 </Button>
 <Dialog bind:open>
     <form class="flex flex-col gap-4" on:submit={on_submit}>
-        <Input name="amount" type="number" label="Amount" />
-        <Input name="category" label="Category" />
+        <Input {error} name="amount" type="number" label="Amount" />
+        <Input {error} name="category" label="Category" />
         <Select
             label="Reocurrency"
             name="reocurrency"
