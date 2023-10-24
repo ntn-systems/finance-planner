@@ -8,42 +8,24 @@ const ReocurrencyTypes = z.nativeEnum({
     annual: 'annual',
 })
 
-export const weeklySchema = z.string().refine(
-    day => {
-        day = day.toLowerCase()
-        const validDaysOfWeek = [
-            'sunday',
-            'monday',
-            'tuesday',
-            'wednesday',
-            'thursday',
-            'friday',
-            'saturday',
-        ]
-        return validDaysOfWeek.includes(day)
-    },
-    {
-        message: 'Error!!!!',
-    },
-)
-
-export const monthlySchema = z.string().refine(
-    day => {
-        const parsedDay = parseInt(day, 10)
-        return !isNaN(parsedDay) && parsedDay >= 1 && parsedDay <= 31
-    },
-    {
-        message: 'Error!!!!',
-    },
-)
-
 export const annualSchema = z.string().refine(day => {
     const validDayAndMonth = /^\d{2}\/\d{2}$/
     return validDayAndMonth.test(day)
 })
 
 const reocurrencyDayParserDict: Record<string, z.ZodSchema> = {
-    weekly: weeklySchema,
+    weekly: z.union([
+        z.number().min(0).max(6),
+        z.array(z.number().min(0).max(6)).optional(),
+    ]),
+    annual: z.union([
+        z.number().min(0).max(11),
+        z.array(z.number().min(0).max(11)).optional(),
+    ]),
+    monthly: z.union([
+        z.number().min(0).max(30),
+        z.array(z.number().min(0).max(30)).optional(),
+    ]),
 }
 
 export type FinanceEntry = {
@@ -51,7 +33,7 @@ export type FinanceEntry = {
     amount: string | number
     category?: string
     reocurrency: z.infer<typeof ReocurrencyTypes>
-    fixedInterval?: string
+    fixedInterval?: string | string[]
 }
 
 export const parse_formdata = (form_data: FormData) => {
@@ -69,15 +51,18 @@ export const is_finance_entry: (
         if (!entry && !is_object) return undefined
         let new_entry = entry as Record<string, unknown>
 
-        if (!new_entry?.['id'])
-            new_entry = {
-                ...new_entry,
-                id: crypto.randomUUID(),
-            }
+        new_entry = {
+            ...new_entry,
+            id: new_entry?.id ?? crypto.randomUUID(),
+            fixedInterval: (new_entry.fixedInterval as string)?.includes(',')
+                ? (new_entry.fixedInterval as string)
+                      .split(',')
+                      .map(v => Number(v))
+                : Number(new_entry.fixedInterval),
+        }
         new_entry.amount = Number(new_entry.amount)
 
         if (new_entry.amount === 0) return
-        console.log(`🚀 ~ new_entry:`, new_entry)
 
         const validator = z.object({
             id: z.string().uuid(),
@@ -92,7 +77,10 @@ export const is_finance_entry: (
                     { message: 'Category cannot contain only numbers' },
                 ),
             reocurrency: ReocurrencyTypes,
-            fixedInterval: z.string().optional(),
+            fixedInterval: z.union([
+                z.number().optional(),
+                z.array(z.number()).optional(),
+            ]),
         })
 
         const validated = validator.parse(new_entry)

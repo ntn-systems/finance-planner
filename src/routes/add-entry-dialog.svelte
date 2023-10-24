@@ -5,6 +5,7 @@
     import Select from '$lib/components/select.svelte'
     import { is_finance_entry } from '$lib/store/entries-validator'
     import { createEventDispatcher } from 'svelte'
+    import IntervalInput from './interval_input.svelte'
 
     const dispatch = createEventDispatcher()
 
@@ -15,12 +16,6 @@
 
     let fixedInterval: 'not fixed' | 'daily' | 'weekly' | 'monthly' | 'annual' =
         'not fixed'
-
-    const reocurrency_labels: Record<string, string> = {
-        weekly: 'Day of the Week',
-        monthly: 'Ocurring day',
-        annual: 'Day of the year',
-    }
 
     const on_submit = (
         e: SubmitEvent & {
@@ -110,13 +105,7 @@
             ]}
             bind:selected={fixedInterval}
         />
-        {#if reocurrency_labels[fixedInterval]}
-            <Input
-                {error}
-                name="fixedInterval"
-                label={reocurrency_labels[fixedInterval]}
-            />
-        {/if}
+        <IntervalInput {fixedInterval} {error} />
         <Button type="submit" class="mt-2 w-full">Save</Button>
     </form>
 </Dialog>
