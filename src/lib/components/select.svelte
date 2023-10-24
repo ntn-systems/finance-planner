@@ -15,6 +15,7 @@
     export let multiple = false
     export let disabled = false
     export let label: string | undefined = undefined
+    export let error: boolean | string | undefined = undefined
 
     type FnPredicate = (s: string | string[] | null) => string
     export let selected_label: string | FnPredicate | undefined = undefined
@@ -37,6 +38,7 @@
         'py-1.5 pl-3 pr-10 text-left dark:text-violet-50 dark:ring-violet-600',
         'text-violet-900 shadow-sm ring-1 ring-inset ring-violet-300',
         disabled ? 'cursos-default bg-neutral-200 dark:bg-neutral-600' : '',
+        error && 'outline-dashed outline-red-500 dark:outline-red-400',
         'sm:text-sm sm:leading-6',
         $$restProps.class,
     )
@@ -167,4 +169,9 @@
             </ul>
         {/if}
     </div>
+    {#if typeof error === 'string'}
+        <span class="ml-2 text-sm text-red-500 dark:text-red-400">
+            {error}
+        </span>
+    {/if}
 </div>
