@@ -1,6 +1,6 @@
 <script lang="ts">
+    import { page } from '$app/stores'
     import Select from '$lib/components/select.svelte'
-    import dayjs from 'dayjs'
 
     export let fixedInterval:
         | 'not fixed'
@@ -10,18 +10,8 @@
         | 'annual'
     export let error: boolean | string
 
-    const week_days_options = Array.from(new Array(7)).map((_, i) => ({
-        label: dayjs().day(i).format('dddd'),
-        value: i.toString(),
-    }))
-    const months_days_options = Array.from(new Array(31)).map((_, i) => ({
-        label: (i + 1).toString(),
-        value: i.toString(),
-    }))
-    const annual_months_options = Array.from(new Array(12)).map((_, i) => ({
-        label: dayjs().month(i).format('MMMM'),
-        value: i.toString(),
-    }))
+    const { week_days_options, months_days_options, annual_months_options } =
+        $page.data
 </script>
 
 {#if fixedInterval === 'weekly'}
