@@ -40,6 +40,7 @@
 
     const classes = twMerge(
         'rounded-xl bg-violet-100 bg-white p-4 backdrop:bg-black backdrop:bg-opacity-40 dark:bg-violet-900 dark:ring-2 dark:ring-violet-700 dark:backdrop:bg-opacity-50',
+        'dark:text-white',
         $$restProps.class,
     )
 </script>

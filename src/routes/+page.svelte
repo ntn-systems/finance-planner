@@ -1,5 +1,6 @@
 <script lang="ts">
     import Button from '$lib/components/Button.svelte'
+    import Dialog from '$lib/components/Dialog.svelte'
     import { entries } from '$lib/store/entries'
     import AddEntryDialog from './add-entry-dialog.svelte'
 
@@ -12,6 +13,8 @@
 
     $: totalValue = totalEarnings + totalSpendings
 
+    let deleteDialog: false | string = false
+
     function deleteEntry(entryFindId: number | string) {
         const index = $entries.findIndex(entry => entry.id === entryFindId)
         if (index !== -1) {
@@ -23,7 +26,7 @@
     }
 </script>
 
-<main class="container relative mx-auto py-8 max-sm:px-4">
+<main class="pyc-8 container relative mx-auto px-2 max-sm:px-4">
     <AddEntryDialog
         on:submit={e => {
             if (e.detail) $entries = [...$entries, e.detail]
@@ -44,7 +47,9 @@
                             'Empty'} | Interval: {entry.fixedInterval} | Date: {entry.reocurrency}
                         <Button
                             class="ml-3 inline-block gap-4"
-                            on:click={() => deleteEntry(entry.id)}
+                            on:click={() => {
+                                deleteDialog = entry.id.toString()
+                            }}
                         >
                             Delete
                         </Button>
@@ -62,13 +67,28 @@
                             'Empty'} | Interval: {entry.fixedInterval} | Date: {entry.reocurrency}
                         <Button
                             class="ml-3 inline-block gap-4"
-                            on:click={() => deleteEntry(entry.id)}
+                            on:click={() => {
+                                deleteDialog = entry.id.toString()
+                            }}
                         >
                             Delete
                         </Button>
                     </div>
                 {/if}
             {/each}
+            <Dialog
+                open={deleteDialog !== false}
+                on:close={() => {
+                    deleteDialog = false
+                }}
+                confirm_text="Are you sure?"
+                on:proceed={ev => {
+                    if (deleteDialog && ev.detail === true) {
+                        deleteEntry(deleteDialog)
+                        deleteDialog = false
+                    }
+                }}
+            />
         </div>
     </div>
 </main>
