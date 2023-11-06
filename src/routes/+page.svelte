@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { page } from '$app/stores'
     import Button from '$lib/components/Button.svelte'
     import Dialog from '$lib/components/Dialog.svelte'
     import { entries } from '$lib/store/entries'
@@ -44,7 +45,7 @@
                 {#if isNegative}
                     <div class="mt-4 text-red-400">
                         Value: {entry.amount} | Category: {entry.category ||
-                            'Empty'} | Interval: {entry.fixedInterval} | Date: {entry.reocurrency}
+                            'Empty'} | Interval: {entry.reocurrency} | Date: {entry.fixedInterval}
                         <Button
                             class="ml-3 inline-block gap-4"
                             on:click={() => {
@@ -64,7 +65,7 @@
                 {#if !isNegative}
                     <div class="mt-4 text-blue-400">
                         Value: {entry.amount} | Category: {entry.category ||
-                            'Empty'} | Interval: {entry.fixedInterval} | Date: {entry.reocurrency}
+                            'Empty'} | Interval: {entry.reocurrency} | Date: {entry.fixedInterval}
                         <Button
                             class="ml-3 inline-block gap-4"
                             on:click={() => {
