@@ -15,9 +15,13 @@ export const load: LayoutServerLoad = () => {
         value: i.toString(),
     }))
 
+    const options_dict: Record<string, typeof week_days_options> = {
+        weekly: week_days_options,
+        monthly: months_days_options,
+        annual: annual_months_options
+    }
+
     return {
-        week_days_options,
-        months_days_options,
-        annual_months_options,
+        options_dict
     }
 }

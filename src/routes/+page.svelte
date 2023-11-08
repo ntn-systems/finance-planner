@@ -25,6 +25,9 @@
             ]
         }
     }
+
+    export let data
+    console.log('🚀 ~ file: +page.svelte:30 ~ data:', data)
 </script>
 
 <main class="pyc-8 container relative mx-auto px-2 max-sm:px-4">
@@ -42,10 +45,23 @@
             {#each $entries as entry}
                 {@const value = Number(entry.amount)}
                 {@const isNegative = value < 0}
+                {@const interval = Array.isArray(entry.fixedInterval)
+                    ? entry?.fixedInterval
+                          .map(
+                              i =>
+                                  data.options_dict[entry.reocurrency]?.[
+                                      Number(i)
+                                  ]?.label,
+                          )
+                          .join(', ')
+                    : data.options_dict[entry.reocurrency]?.[
+                          Number(entry.fixedInterval)
+                      ]?.label}
                 {#if isNegative}
                     <div class="mt-4 text-red-400">
                         Value: {entry.amount} | Category: {entry.category ||
-                            'Empty'} | Interval: {entry.reocurrency} | Date: {entry.fixedInterval}
+                            'Empty'} | Interval: {entry.reocurrency} | Date: {interval ||
+                            ''}
                         <Button
                             class="ml-3 inline-block gap-4"
                             on:click={() => {
@@ -62,10 +78,23 @@
             {#each $entries as entry}
                 {@const value = Number(entry.amount)}
                 {@const isNegative = value < 0}
+                {@const interval = Array.isArray(entry.fixedInterval)
+                    ? entry?.fixedInterval
+                          .map(
+                              i =>
+                                  data.options_dict[entry.reocurrency]?.[
+                                      Number(i)
+                                  ]?.label,
+                          )
+                          .join(', ')
+                    : data.options_dict[entry.reocurrency]?.[
+                          Number(entry.fixedInterval)
+                      ]?.label}
                 {#if !isNegative}
                     <div class="mt-4 text-blue-400">
                         Value: {entry.amount} | Category: {entry.category ||
-                            'Empty'} | Interval: {entry.reocurrency} | Date: {entry.fixedInterval}
+                            'Empty'} | Interval: {entry.reocurrency} | Date: {interval ||
+                            ''}
                         <Button
                             class="ml-3 inline-block gap-4"
                             on:click={() => {
@@ -82,7 +111,7 @@
                 on:close={() => {
                     deleteDialog = false
                 }}
-                confirm_text="Are you sure?"
+                confirm_text="Delete Entry"
                 on:proceed={ev => {
                     if (deleteDialog && ev.detail === true) {
                         deleteEntry(deleteDialog)
