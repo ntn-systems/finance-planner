@@ -4,6 +4,7 @@
     import Dialog from '$lib/components/Dialog.svelte'
     import { entries } from '$lib/store/entries'
     import AddEntryDialog from './add-entry-dialog.svelte'
+    import Newtab from './newtab.svelte'
 
     $: totalEarnings = $entries
         .filter(e => Number(e.amount) > 0)
@@ -40,6 +41,7 @@
         You have spended ${totalSpendings} and you have earned ${totalEarnings}
         for a total of ${totalValue}
     </p>
+    <Newtab />
     <div class="mx-auto mb-auto ml-auto mr-auto mt-auto flex">
         <div class="col-auto w-1/2">
             {#each $entries as entry}
