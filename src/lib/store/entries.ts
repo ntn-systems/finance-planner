@@ -1,5 +1,5 @@
 import { browser } from '$app/environment'
-import { writable } from 'svelte/store'
+import { derived,writable } from 'svelte/store'
 import type { FinanceEntry } from './entries-validator'
 
 const initial_state = () => {
@@ -11,6 +11,19 @@ const initial_state = () => {
 }
 
 export const entries = writable<FinanceEntry[]>(initial_state())
+
+export const weeklyEntries = derived(entries, ($entries) => 
+    $entries.filter((entry) => entry.reocurrency === 'weekly').map((entry) => {
+        const amount = entry.amount as number;
+
+        return {
+            ...entry,
+            WeeklyFee: amount,
+            MonthlyFee: amount * 4,
+            AnnualFee: amount * 48,
+        };
+    })
+);
 
 entries.subscribe(state => {
     if (browser) {

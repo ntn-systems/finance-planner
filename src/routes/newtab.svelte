@@ -38,8 +38,6 @@
 
         return originalValue
     }
-
-    export const currentTab = selectedTab
 </script>
 
 <div>
