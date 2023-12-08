@@ -18,9 +18,35 @@ export const weeklyEntries = derived(entries, ($entries) =>
 
         return {
             ...entry,
-            WeeklyFee: amount,
-            MonthlyFee: amount * 4,
-            AnnualFee: amount * 48,
+            weeklyFee: amount,
+            monthlyFee: amount * 4,
+            annualFee: amount * 48,
+        };
+    })
+);
+
+export const monthlyEntries = derived(entries, ($entries) => 
+    $entries.filter((entry) => entry.reocurrency === 'monthly').map((entry) => {
+        const amount = entry.amount as number;
+
+        return {
+            ...entry,
+            weeklyFee: amount / 4,
+            monthlyFee: amount,
+            annualFee: amount * 12,
+        };
+    })
+);
+
+export const annualEntries = derived(entries, ($entries) => 
+    $entries.filter((entry) => entry.reocurrency === 'annual').map((entry) => {
+        const amount = entry.amount as number;
+
+        return {
+            ...entry,
+            weeklyFee: amount / 48,
+            monthlyFee: amount / 12,
+            annualFee: amount,
         };
     })
 );

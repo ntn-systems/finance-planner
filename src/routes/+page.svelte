@@ -1,6 +1,12 @@
 <script lang="ts">
     import Dialog from '$lib/components/Dialog.svelte'
-    import { entries, weeklyEntries } from '$lib/store/entries'
+    import { entries } from '$lib/store/entries'
+    import {
+        totalWeeklySpendings,
+        totalMonthlySpendings,
+        totalAnnualSpendings,
+        totalSpendings,
+    } from '$lib/store/display-info'
     import AddEntryDialog from './add-entry-dialog.svelte'
     import Newtab from './newtab.svelte'
 
@@ -11,19 +17,6 @@
         console.log('test', currentTab)
     }
 
-    $: totalEarnings = $entries
-        .filter(e => Number(e.amount) > 0)
-        .reduce((acc, curr) => Number(curr.amount) + acc, 0)
-    $: totalSpendings = $entries
-        .filter(e => Number(e.amount) < 0)
-        .reduce((acc, curr) => Number(curr.amount) + acc, 0)
-
-    $: totalValue = totalEarnings + totalSpendings
-
-    $: totalWeeklySpendings = $weeklyEntries
-        .filter(e => Number(e.WeeklyFee) < 0)
-        .reduce((acc, curr) => Number(curr.WeeklyFee) + acc, 0)
-
     export let data
     console.log('🚀 ~ file: +page.svelte:30 ~ data:', data)
 
@@ -31,17 +24,15 @@
         const value = Number(originalValue)
 
         if (currentTab === 'weekly') {
-            return (value / 4).toFixed(2)
+            return $totalWeeklySpendings
         } else if (currentTab === 'monthly') {
-            return value.toFixed(2)
+            return $totalMonthlySpendings
         } else if (currentTab === 'annual') {
-            return (value * 12).toFixed(2)
+            return $totalAnnualSpendings
         }
 
         return originalValue
     }
-
-    console.log('test weeklys', $weeklyEntries)
 </script>
 
 <main class="pyc-8 container relative mx-auto px-2 max-sm:px-4">
@@ -56,8 +47,15 @@
             currentTab,
         )}
     </p>
-    <p>
-        Weekly total test: {totalWeeklySpendings}
+    <p class="text-white">
+        Weekly total test: {$totalWeeklySpendings}
+    </p>
+    <p class="text-white">
+        Monthly total test: {$totalMonthlySpendings}
+    </p>
+
+    <p class="text-white">
+        Annual total test: {$totalAnnualSpendings}
     </p>
     <Newtab on:currTab={handleTabChange} />
 

@@ -19,6 +19,10 @@ export type FinanceEntry = {
     category?: string
     reocurrency: z.infer<typeof ReocurrencyTypes>
     fixedInterval?: string | string[]
+    weeklyFee?: number
+    monthlyFee?: number
+    annualFee?: number
+
 }
 
 export const parse_formdata = (form_data: FormData) => {

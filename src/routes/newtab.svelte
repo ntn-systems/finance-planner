@@ -2,7 +2,8 @@
     import { page } from '$app/stores'
     import Button from '$lib/components/Button.svelte'
     import Dialog from '$lib/components/Dialog.svelte'
-    import { entries } from '$lib/store/entries'
+    import { entries, type FinanceEntry } from '$lib/store/entries'
+    import { allEntries } from '$lib/store/display-info'
     import { createEventDispatcher } from 'svelte'
     let selectedTab = 'weekly'
 
@@ -24,19 +25,18 @@
             ]
         }
     }
-    $: displayValue = (originalValue: any, selectedTab: string) => {
-        const value = Number(originalValue)
-        // console.log('🚀 ~ file: newtab.svelte:22 ~ value:', value)
-
-        if (selectedTab === 'weekly') {
-            return (value / 4).toFixed(2)
-        } else if (selectedTab === 'monthly') {
-            return value.toFixed(2)
-        } else if (selectedTab === 'annual') {
-            return (value * 12).toFixed(2)
+    $: displayValue = (allEntries: FinanceEntry[], selectedTab: string) => {
+        const entry = allEntries[0]
+        if (entry) {
+            if (selectedTab === 'weekly') {
+                return entry.weeklyFee
+            } else if (selectedTab === 'monthly') {
+                return entry.monthlyFee
+            } else if (selectedTab === 'annual') {
+                return entry.annualFee
+            }
         }
-
-        return originalValue
+        return 0
     }
 </script>
 
@@ -103,7 +103,7 @@
                       ]?.label}
                 {#if isNegative}
                     <div class="mt-4 text-red-400">
-                        Value: {displayValue(entry.amount, selectedTab)} | Category:
+                        Value: {displayValue($allEntries, selectedTab)} | Category:
                         {entry.category || 'Empty'} | Interval: {entry.reocurrency}
                         | Date: {interval || ''}
                         <Button
