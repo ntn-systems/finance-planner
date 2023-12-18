@@ -1,5 +1,4 @@
 <script lang="ts">
-    import Dialog from '$lib/components/Dialog.svelte'
     import { entries } from '$lib/store/entries'
     import {
         totalWeeklySpendings,

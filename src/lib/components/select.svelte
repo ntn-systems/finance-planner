@@ -37,9 +37,8 @@
         pl-3 pr-10 text-left text-violet-900 shadow-sm ring-1
         ring-inset ring-violet-300 dark:bg-violet-600 dark:text-violet-50 dark:ring-violet-600
         ${disabled ? 'cursos-default bg-neutral-200 dark:bg-neutral-600' : ''}
-        ${error && 'outline-dashed outline-red-500 dark:outline-red-400'}
-        $$restProps.class sm:text-sm
-        sm:leading-6
+        ${error ? 'outline-dashed outline-red-500 dark:outline-red-400' : ''}
+        $$restProps.class sm:text-sm sm:leading-6
     `)
 
     $: if (open) {
@@ -112,7 +111,7 @@
                         fill-rule="evenodd"
                         d="M10 3a.75.75 0 01.55.24l3.25 3.5a.75.75 0 11-1.1 1.02L10 4.852 7.3 7.76a.75.75 0 01-1.1-1.02l3.25-3.5A.75.75 0 0110 3zm-3.76 9.2a.75.75 0 011.06.04l2.7 2.908 2.7-2.908a.75.75 0 111.1 1.02l-3.25 3.5a.75.75 0 01-1.1 0l-3.25-3.5a.75.75 0 01.04-1.06z"
                         clip-rule="evenodd"
-                    />
+                    ></path>
                 </svg>
             </span>
         </button>
@@ -159,7 +158,7 @@
                                         fill-rule="evenodd"
                                         d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
                                         clip-rule="evenodd"
-                                    />
+                                    ></path>
                                 </svg>
                             </span>
                         {/if}
