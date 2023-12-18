@@ -82,14 +82,14 @@
             label="Reocurrency"
             name="reocurrency"
             options={[
-                {
-                    label: 'Not Fixed',
-                    value: 'not fixed',
-                },
-                {
-                    label: 'Daily',
-                    value: 'daily',
-                },
+                // {
+                //     label: 'Not Fixed',
+                //     value: 'not fixed',
+                // },
+                // {
+                //     label: 'Daily',
+                //     value: 'daily',
+                // },
                 {
                     label: 'Weekly',
                     value: 'weekly',

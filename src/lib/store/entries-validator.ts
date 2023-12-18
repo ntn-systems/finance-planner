@@ -1,8 +1,8 @@
 import { z } from 'zod'
 
 const ReocurrencyTypes = z.nativeEnum({
-    'not fixed': 'not fixed',
-    daily: 'daily',
+    // 'not fixed': 'not fixed',
+    // daily: 'daily',
     weekly: 'weekly',
     monthly: 'monthly',
     annual: 'annual',

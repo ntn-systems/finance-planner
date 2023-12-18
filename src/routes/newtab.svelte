@@ -25,9 +25,7 @@
             ]
         }
     }
-    $: displayValue = (allEntries: FinanceEntry[], selectedTab: string) => {
-        const entry = allEntries[0]
-        if (entry) {
+    $: displayValue = (entry: FinanceEntry, selectedTab: string) => {
             if (selectedTab === 'weekly') {
                 return entry.weeklyFee
             } else if (selectedTab === 'monthly') {
@@ -35,8 +33,6 @@
             } else if (selectedTab === 'annual') {
                 return entry.annualFee
             }
-        }
-        return 0
     }
 </script>
 
@@ -86,7 +82,7 @@
     </div>
     <div class="mx-auto mb-auto ml-auto mr-auto mt-auto flex">
         <div class="col-auto">
-            {#each $entries as entry}
+            {#each $allEntries as entry}
                 {@const value = Number(entry.amount)}
                 {@const isNegative = value < 0}
                 {@const interval = Array.isArray(entry.fixedInterval)
@@ -103,7 +99,7 @@
                       ]?.label}
                 {#if isNegative}
                     <div class="mt-4 text-red-400">
-                        Value: {displayValue($allEntries, selectedTab)} | Category:
+                        Value: {displayValue(entry, selectedTab)} | Category:
                         {entry.category || 'Empty'} | Interval: {entry.reocurrency}
                         | Date: {interval || ''}
                         <Button
