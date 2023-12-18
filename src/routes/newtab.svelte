@@ -26,13 +26,13 @@
         }
     }
     $: displayValue = (entry: FinanceEntry, selectedTab: string) => {
-            if (selectedTab === 'weekly') {
-                return entry.weeklyFee
-            } else if (selectedTab === 'monthly') {
-                return entry.monthlyFee
-            } else if (selectedTab === 'annual') {
-                return entry.annualFee
-            }
+        if (selectedTab === 'weekly') {
+            return entry.weeklyFee
+        } else if (selectedTab === 'monthly') {
+            return entry.monthlyFee
+        } else if (selectedTab === 'annual') {
+            return entry.annualFee
+        }
     }
 </script>
 
@@ -99,7 +99,7 @@
                       ]?.label}
                 {#if isNegative}
                     <div class="mt-4 text-red-400">
-                        Value: {displayValue(entry, selectedTab)} | Category:
+                        Value: {displayValue(entry, selectedTab)?.toFixed(2)} | Category:
                         {entry.category || 'Empty'} | Interval: {entry.reocurrency}
                         | Date: {interval || ''}
                         <Button

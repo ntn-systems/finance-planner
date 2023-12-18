@@ -42,7 +42,24 @@
         Your current {currentTab} cost is ${sumTotal(
             totalSpendings,
             currentTab,
-        )}
+        ).toFixed(2)}
     </p>
     <Newtab on:currTab={handleTabChange} />
+    {#if currentTab === 'weekly'}
+        <p class="text-white">
+            Weekly Total Cost: ${$totalWeeklySpendings.toFixed(2)}
+        </p>
+    {/if}
+
+    {#if currentTab === 'monthly'}
+        <p class="text-white">
+            Monthly Total Cost: ${$totalMonthlySpendings.toFixed(2)}
+        </p>
+    {/if}
+
+    {#if currentTab === 'annual'}
+        <p class="text-white">
+            Annual Total Cost: ${$totalAnnualSpendings.toFixed(2)}
+        </p>
+    {/if}
 </main>
