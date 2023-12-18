@@ -26,7 +26,7 @@
 
     export let mask: MaskOptions | undefined = undefined
 
-    $: is_using_mask = !!keys(mask).length
+    $: is_using_mask = !!keys(mask ?? {}).length
 
     $: merged_classes = twMerge(
         'min-w-[198px] rounded-full px-3 py-1.5 font-sans',

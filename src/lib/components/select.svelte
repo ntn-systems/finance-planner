@@ -20,7 +20,6 @@
     type FnPredicate = (s: string | string[] | null) => string
     export let selected_label: string | FnPredicate | undefined = undefined
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const is_fn = (l: any): l is FnPredicate => !!l?.apply
 
     $: selected_label_selector = is_fn(selected_label)
@@ -33,15 +32,15 @@
 
     let ul: HTMLUListElement | null = null
 
-    const classes = twMerge(
-        'relative w-full cursor-pointer rounded-full bg-violet-300 bg-white dark:bg-violet-600',
-        'py-1.5 pl-3 pr-10 text-left dark:text-violet-50 dark:ring-violet-600',
-        'text-violet-900 shadow-sm ring-1 ring-inset ring-violet-300',
-        disabled ? 'cursos-default bg-neutral-200 dark:bg-neutral-600' : '',
-        error && 'outline-dashed outline-red-500 dark:outline-red-400',
-        'sm:text-sm sm:leading-6',
-        $$restProps.class,
-    )
+    const classes = twMerge(`
+        relative w-full cursor-pointer rounded-full bg-violet-300 bg-white py-1.5
+        pl-3 pr-10 text-left text-violet-900 shadow-sm ring-1
+        ring-inset ring-violet-300 dark:bg-violet-600 dark:text-violet-50 dark:ring-violet-600
+        ${disabled ? 'cursos-default bg-neutral-200 dark:bg-neutral-600' : ''}
+        ${error && 'outline-dashed outline-red-500 dark:outline-red-400'}
+        $$restProps.class sm:text-sm
+        sm:leading-6
+    `)
 
     $: if (open) {
         ul?.focus()
@@ -76,7 +75,7 @@
     }
 </script>
 
-<div class={`flex w-full flex-col items-start gap-0.5`}>
+<div class="flex w-full flex-col items-start gap-0.5">
     {#if label}
         <span
             class="text-md ml-2 font-semibold capitalize text-violet-900 dark:text-violet-50"
@@ -169,9 +168,4 @@
             </ul>
         {/if}
     </div>
-    {#if typeof error === 'string'}
-        <span class="ml-2 text-sm text-red-500 dark:text-red-400">
-            {error}
-        </span>
-    {/if}
 </div>
